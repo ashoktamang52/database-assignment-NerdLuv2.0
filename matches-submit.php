@@ -37,7 +37,7 @@ if (strcmp($owner_gender, 'M') === 0) {
     $opposite_gender = 'M';
 }
 
-$list_after_gender = array();
+$matches = array();
 for ($i = 0; $i < count($singles); $i++) {
     $single_list = explode(",", $singles[$i]);
     $single_gender = $single_list[1];
@@ -63,17 +63,17 @@ for ($i = 0; $i < count($singles); $i++) {
                 // check personality req 
                 $pattern = "/[".$owner_personality."]/";
                 if (preg_match($pattern, $single_personality) === 1)
-                    $list_after_gender[] = $singles[$i];
+                    $matches[] = $singles[$i];
             }
         }
     }
 }
 
-if (count($list_after_gender) === 0) {?>
+if (count($matches) === 0) {?>
     <div> No match is found. </div>
 <?php 
     } else
-        print_r($list_after_gender);
+        print_r($matches);
 ?>
 
 <?php include("bottom.html"); ?>
