@@ -1,12 +1,38 @@
 <?php 
 include("top.html");
-echo $_GET["name"];
+
+// Read file
 $singles = file("singles.txt");
-// print_r($singles);
-for($i=0; $i < count($singles); $i++) {
+
+// find and get owner info
+$owner = '';
+for ($i = 0; $i < count($singles); $i++) {
     $owner = strstr($singles[$i], $_GET["name"]);
-    echo $owner;
+    if ($owner !== FALSE) {
+        break;
+    }
 }
+
+/* 
+* $owner_list is comprised of owner attributes in following order:
+* Name, Gender, Age, Personality type, Operating System, Min/Max Seeking Age (separate elements)
+*/
+$owner_list = explode(",", $owner);
+print_r($owner_list);
+
+
+// get match 
+// filter opposite gender
+$owner_gender = $owner_list[1];
+
+$list_after_gender = array();
+for ($i = 0; $i < count($singles); $i++) {
+    $single_gender = explode(",", $singles[$i])[1];
+    if (strcmp($owner_gender, $single_gender) === 0) {
+        $list_after_gender[] = $singles[$i];
+    }
+}
+print_r($list_after_gender);
 ?>
 
 <?php include("bottom.html"); ?>
