@@ -21,11 +21,11 @@ $owner_list = explode(",", $owner);
 print_r($owner_list);
 // $owner details
 $owner_gender = $owner_list[1];
-$owner_age = $owner_list[2];
+$owner_age = (int)$owner_list[2];
 $owner_personality = $owner_list[3];
 $owner_os = $owner_list[4];
-$owner_min_seek = $owner_list[5];
-$owner_max_seek = $owner_list[6];
+$owner_min_seek = (int)$owner_list[5];
+$owner_max_seek = (int)$owner_list[6];
 
 
 // get match 
@@ -40,9 +40,33 @@ if (strcmp($owner_gender, 'M') === 0) {
 
 $list_after_gender = array();
 for ($i = 0; $i < count($singles); $i++) {
-    $single_gender = explode(",", $singles[$i])[1];
+    $single_list = explode(",", $singles[$i]);
+    $single_gender = $single_list[1];
+    $single_age = (int)$single_list[2];
+    $single_personality = $single_list[3];
+    $single_os = $single_list[4];
+    $single_min_seek = (int)$single_list[5];
+    $single_max_seek = (int)$single_list[6];
+
+    // Check requirements
+    // Check gender req
     if (strcmp($opposite_gender, $single_gender) === 0) {
-        $list_after_gender[] = $singles[$i];
+        $owner_compatible = NULL;
+        $single_compatible = NULL;
+        if ($single_min_seek <= $owner_age && $owner_age <= $single_max_seek)
+            $owner_compatible = TRUE;
+        if ($owner_min_seek <= $single_age && $single_age <= $owner_max_seek)
+            $single_compatible = TRUE;
+        // check compatible age range req
+        if ($owner_compatible && $single_compatible) {
+            // check os req 
+            if (strcmp($owner_os, $single_os) === 0) {
+                // check personality req 
+                $pattern = "/[".$owner_personality."]/";
+                if (preg_match($pattern, $single_personality) === 1)
+                    $list_after_gender[] = $singles[$i];
+            }
+        }
     }
 }
 print_r($list_after_gender);
