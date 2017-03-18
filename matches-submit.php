@@ -24,11 +24,17 @@ print_r($owner_list);
 // get match 
 // filter opposite gender
 $owner_gender = $owner_list[1];
+$opposite_gender = '';
+if (strcmp($owner_gender, 'M') === 0) {
+    $opposite_gender = 'F';
+} else {
+    $opposite_gender = 'M';
+}
 
 $list_after_gender = array();
 for ($i = 0; $i < count($singles); $i++) {
     $single_gender = explode(",", $singles[$i])[1];
-    if (strcmp($owner_gender, $single_gender) === 0) {
+    if (strcmp($opposite_gender, $single_gender) === 0) {
         $list_after_gender[] = $singles[$i];
     }
 }
