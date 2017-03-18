@@ -18,7 +18,6 @@ for ($i = 0; $i < count($singles); $i++) {
 * Name, Gender, Age, Personality type, Operating System, Min/Max Seeking Age (separate elements)
 */
 $owner_list = explode(",", $owner);
-print_r($owner_list);
 // $owner details
 $owner_gender = $owner_list[1];
 $owner_age = (int)$owner_list[2];
