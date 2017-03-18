@@ -19,11 +19,18 @@ for ($i = 0; $i < count($singles); $i++) {
 */
 $owner_list = explode(",", $owner);
 print_r($owner_list);
+// $owner details
+$owner_gender = $owner_list[1];
+$owner_age = $owner_list[2];
+$owner_personality = $owner_list[3];
+$owner_os = $owner_list[4];
+$owner_min_seek = $owner_list[5];
+$owner_max_seek = $owner_list[6];
 
 
 // get match 
-// filter opposite gender
-$owner_gender = $owner_list[1];
+
+// get opposite gender
 $opposite_gender = '';
 if (strcmp($owner_gender, 'M') === 0) {
     $opposite_gender = 'F';
