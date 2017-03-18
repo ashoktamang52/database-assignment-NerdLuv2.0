@@ -1,10 +1,12 @@
-<?php include("top.html"); ?>
-Matches Submit la lalala
-
 <?php 
-echo $_POST["name"];
-$matches = file("singles.txt");
-print_r($matches);
+include("top.html");
+echo $_GET["name"];
+$singles = file("singles.txt");
+// print_r($singles);
+for($i=0; $i < count($singles); $i++) {
+    $owner = strstr($singles[$i], $_GET["name"]);
+    echo $owner;
+}
 ?>
 
 <?php include("bottom.html"); ?>
