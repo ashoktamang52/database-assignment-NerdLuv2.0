@@ -68,7 +68,12 @@ for ($i = 0; $i < count($singles); $i++) {
         }
     }
 }
-print_r($list_after_gender);
+
+if (count($list_after_gender) === 0) {?>
+    <div> No match is found. </div>
+<?php 
+    } else
+        print_r($list_after_gender);
 ?>
 
 <?php include("bottom.html"); ?>
