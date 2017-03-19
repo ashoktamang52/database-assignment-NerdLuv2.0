@@ -1,7 +1,7 @@
 <?php include("top.html"); ?>
 <div>
 	<div> Returning User: </div>
-	<form action="/signup-submit.php">
+	<form action="/signup-submit.php" method="post">
 		Name: <input type="text" name="name" size="17" maxlength="16"><br>
         Gender:
             <input type="radio" name="gender" value="M">Male
