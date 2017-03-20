@@ -65,17 +65,31 @@ for ($i = 0; $i < count($singles); $i++) {
                 if (preg_match($pattern, $single_personality) === 1) {
                     $matches[] = $singles[$i];
 ?>
-                    <div> Matches for <?= $_GET["name"] ?> </div>
-                    <div>
-                        <!--Image-->
-                    </div>
-                    <div>
+                    <p><strong> Matches for <?= $_GET["name"] ?> </strong></p>
+                    <div class="match">
+                    <img src="user.jpg" alt="Profile Picture">
                         <!--Match info-->
-                        <div> <?= $single_list[0] ?> </div>
-                        <div> gender: <?= $single_gender ?> </div>
-                        <div> age: <?= $single_age ?> </div>
-                        <div> type: <?= $single_personality ?> </div>
-                        <div> OS: <?= $single_os ?> </div>
+                    <div>
+                        <p> <?= $single_list[0] ?> </p>
+                        <ul>
+                            <li>
+                            <strong>gender: </strong> 
+                            <?= $single_gender ?>
+                            </li>
+                            <li>
+                            <strong>age: </strong> 
+                            <?= $single_age ?>
+                            </li>
+                            <li>
+                            <strong>type: </strong> 
+                            <?= $single_personality ?>
+                            </li>
+                            <li>
+                            <strong>OS: </strong> 
+                            <?= $single_os ?>
+                            </li>
+                        </ul>
+                    </div>
                     </div>
 <?php
                 }
