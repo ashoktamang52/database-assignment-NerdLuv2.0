@@ -64,43 +64,48 @@ for ($i = 0; $i < count($singles); $i++) {
                 $pattern = "/[".$owner_personality."]/";
                 if (preg_match($pattern, $single_personality) === 1) {
                     $matches[] = $singles[$i];
-?>
-                    <p><strong> Matches for <?= $_GET["name"] ?> </strong></p>
-                    <div class="match">
-                    <img src="user.jpg" alt="Profile Picture">
-                        <!--Match info-->
-                    <div>
-                        <p> <?= $single_list[0] ?> </p>
-                        <ul>
-                            <li>
-                            <strong>gender: </strong> 
-                            <?= $single_gender ?>
-                            </li>
-                            <li>
-                            <strong>age: </strong> 
-                            <?= $single_age ?>
-                            </li>
-                            <li>
-                            <strong>type: </strong> 
-                            <?= $single_personality ?>
-                            </li>
-                            <li>
-                            <strong>OS: </strong> 
-                            <?= $single_os ?>
-                            </li>
-                        </ul>
-                    </div>
-                    </div>
-<?php
                 }
             }
         }
     }
 }
-
 if (count($matches) === 0) { 
 ?>
     <div> No match is found. </div>
 <?php 
+} else {
+?>
+<p><strong> Matches for <?= $_GET["name"] ?> </strong></p>
+<?php
+    for ($i = 0; $i < count($matches); $i++) {
+        $single_info = explode(",", $matches[$i]);
+?>
+<div class="match">
+    <img src="user.jpg" alt="Profile Picture">
+    <!--Match info-->
+    <div>
+        <p> <?= $single_info[0] ?> </p>
+        <ul>
+            <li>
+                <strong>gender: </strong> 
+                <?= $single_info[1] ?>
+            </li>
+            <li>
+                <strong>age: </strong> 
+                <?= $single_info[2] ?>
+            </li>
+            <li>
+                <strong>type: </strong> 
+                <?= $single_info[3] ?>
+            </li>
+            <li>
+                <strong>OS: </strong> 
+                <?= $single_info[4] ?>
+            </li>
+        </ul>
+    </div>
+</div>
+<?php
+    }
 }
 include("bottom.html"); ?>
