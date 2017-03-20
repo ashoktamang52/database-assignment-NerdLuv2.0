@@ -62,7 +62,8 @@ if (!$any_error) {
                         $_POST["max_seek_age"]
                     );
     $user_info_to_write = implode(",", $user_details);
-    echo $user_info_to_write; 
+    echo $user_info_to_write;
+    file_put_contents("singles.txt", PHP_EOL.$user_info_to_write, FILE_APPEND);
 }
 ?>
 <?php include("bottom.html"); ?>
