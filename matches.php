@@ -4,7 +4,7 @@
 		<fieldset>
 			<legend> Returning User: </legend>
 			<strong> Name: </strong>
-			<input type="text" name="name" maxlength="16"><br>
+			<input type="text" name="name" maxlength="16" required><br>
 			<input type="submit" value="View My Matches">
 		</fieldset>
 	</form>
