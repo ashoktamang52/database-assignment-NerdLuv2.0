@@ -62,18 +62,31 @@ for ($i = 0; $i < count($singles); $i++) {
             if (strcmp($owner_os, $single_os) === 0) {
                 // check personality req 
                 $pattern = "/[".$owner_personality."]/";
-                if (preg_match($pattern, $single_personality) === 1)
+                if (preg_match($pattern, $single_personality) === 1) {
                     $matches[] = $singles[$i];
+?>
+                    <div> Matches for <?= $_GET["name"] ?> </div>
+                    <div>
+                        <!--Image-->
+                    </div>
+                    <div>
+                        <!--Match info-->
+                        <div> <?= $single_list[0] ?> </div>
+                        <div> gender: <?= $single_gender ?> </div>
+                        <div> age: <?= $single_age ?> </div>
+                        <div> type: <?= $single_personality ?> </div>
+                        <div> OS: <?= $single_os ?> </div>
+                    </div>
+<?php
+                }
             }
         }
     }
 }
 
-if (count($matches) === 0) {?>
+if (count($matches) === 0) { 
+?>
     <div> No match is found. </div>
 <?php 
-    } else
-        print_r($matches);
-?>
-
-<?php include("bottom.html"); ?>
+}
+include("bottom.html"); ?>
