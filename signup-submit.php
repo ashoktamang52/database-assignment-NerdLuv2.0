@@ -64,6 +64,12 @@ if (!$any_error) {
     $user_info_to_write = implode(",", $user_details);
     echo $user_info_to_write;
     file_put_contents("singles.txt", PHP_EOL.$user_info_to_write, FILE_APPEND);
-}
 ?>
+    <pre>
+        Thank you
+        Welcome to NerdLuv, <?= $_POST["name"] ?>!
+        Now log in to see your matches!
+    </pre>
+<?php } ?>
 <?php include("bottom.html"); ?>
+php
