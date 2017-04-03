@@ -1,11 +1,4 @@
 <?php include("top.html"); ?>
-<?php include_once("service.php");
-
-$rows = $db->query("SELECT * FROM user_info;");
-
-foreach($rows as $row) {
-    print_r($row);
-}
 ?>
 <div>
 	<form action="/signup-submit.php" method="post">
