@@ -1,12 +1,7 @@
 <?php include("top.html"); ?>
 <?php
-include_once("service.php");
+include_once("database_connection.php");
 
-$rows = $db->query("SELECT * FROM user_info;");
-
-foreach($rows as $row) {
-    print_r($row);
-}
 // name should be letters only and every word should be started by upper
 // case letter
 // throw error if digits exist in the string.
@@ -14,7 +9,7 @@ foreach($rows as $row) {
 // Bool to store any error during validation. 
 $any_error = FALSE;
 
-if (preg_match("/[0-9]/", $_POST["name"]) === 1) {
+if (isset($_POST["name"]) and preg_match("/[0-9]/", $_POST["name"]) === 1) {
     $any_error = TRUE;
 ?>
 <div> Error: Name contains digits in it. </div>
@@ -33,7 +28,7 @@ for ($i = 0; $i < count($name_list); $i++) {
 }
 
 //validate age
-if (!is_numeric($_POST["age"])) {
+if (isset($_POST["age"]) and !is_numeric($_POST["age"])) {
     $any_error = TRUE;
 ?>
 <div> Error: Age is not a number. </div>
@@ -45,7 +40,7 @@ $personality = array("ESTJ", "ISTJ", "ENTJ", "INTJ",
                     "ESFJ", "ISFJ", "ENFJ", "INFJ", 
                     "ESFP", "ISFP", "ENFP", "INFP"
                 );
-if (!in_array($_POST["personality_type"], $personality)) {
+if (isset($_POST["personality_type"]) and !in_array($_POST["personality_type"], $personality)) {
     $any_error = TRUE;
 ?>
 <div> Error: Enter a valid Personality type. </div>
@@ -53,32 +48,38 @@ if (!in_array($_POST["personality_type"], $personality)) {
 }
 
 // validate min/max seeking age.
-if (!is_numeric($_POST["min_seek_age"])) {
+if (isset($_POST["min_seek_age"]) and !is_numeric($_POST["min_seek_age"])) {
     $any_error = TRUE;
 ?>
 <div> Error: Min seeking age is not a number. </div>
 <?php
 }
 
-if (!is_numeric($_POST["max_seek_age"])) {
+if (isset($_POST["max_seek_age"]) and !is_numeric($_POST["max_seek_age"])) {
     $any_error = TRUE;
 ?>
 <div> Error: Max seeking age is not a number. </div>
 <?php
 }
-// Write to singles.txt after validation. 
+// Write to database after validation. 
 if (!$any_error) {
     //parse form details into a one line
-    $user_details = array($_POST["name"],
-                        $_POST["gender"],
-                        $_POST["age"],
-                        $_POST["personality_type"],
-                        $_POST["os"],
-                        $_POST["min_seek_age"],
-                        $_POST["max_seek_age"]
-                    );
-    $user_info_to_write = implode(",", $user_details);
-    file_put_contents("singles.txt", PHP_EOL.$user_info_to_write, FILE_APPEND);
+    $user_info = array(
+                    $db->quote($_POST["name"]),
+                    $db->quote($_POST["gender"]),
+                    $_POST["age"]
+                );
+    // Insert into table 'user_info'. 
+    $user_info_to_write = implode(",", $user_info);
+    try {
+        $insert = $db->exec("INSERT INTO user_info (name, gender, age) values
+                        ($user_info_to_write);");
+        print("Inserted $insert rows.\n");
+    } catch (PDOException $ex) {
+        // the record already exists in the database.
+    }
+    
+    
 ?>
     <div> Thank you </div>
     <div>Welcome to NerdLuv, <?= $_POST["name"] ?>! </div>
