@@ -72,14 +72,41 @@ if (!$any_error) {
     // Insert into table 'user_info'. 
     $user_info_to_write = implode(",", $user_info);
     try {
-        $insert = $db->exec("INSERT INTO user_info (name, gender, age) values
+        $rows = $db->exec("INSERT INTO user_info (name, gender, age) values
                         ($user_info_to_write);");
-        print("Inserted $insert rows.\n");
+        print("Inserted $rows rows in user_info.\n");
+        $name = $db->quote($_POST["name"]);
+        $query = $db->query("SELECT id from user_info 
+                                where name=$name");
+        $primary_id;
+        foreach($query as $one_query) {
+            $primary_id = $one_query["id"];
+        }
+        print($primary_id);
+        $fav_os = $db->quote($_POST["os"]);
+        // Insert into table 'user_fav_os'.
+        $rows = $db->exec("INSERT INTO user_fav_os (id, os) values
+                    ($primary_id, $fav_os)");
+        print("Inserted $rows rows in user_os.\n");
+
+        // Insert into table 'user_personality'. 
+        $personality_type = $db->quote($_POST["personality_type"]);
+        $rows = $db->exec("INSERT INTO user_personality (id, personality_type) values
+                    ($primary_id, $personality_type)");
+        print("Inserted $rows rows in person.\n");
+
+        // Insert into table 'user_seeking_age'.
+        $min_seek_age = $_POST["min_seek_age"];
+        $max_seek_age = $_POST["max_seek_age"];
+        $rows = $db->exec("INSERT INTO user_seeking_age (id, min_seeking_age, max_seeking_age) values
+                    ($primary_id, $min_seek_age, $max_seek_age)");
+        print("Inserted $rows rows in seek.\n");
+        
     } catch (PDOException $ex) {
         // the record already exists in the database.
     }
-    
-    
+
+
 ?>
     <div> Thank you </div>
     <div>Welcome to NerdLuv, <?= $_POST["name"] ?>! </div>
