@@ -1,6 +1,8 @@
 <?php 
 include("top.html");
 
+include_once("database_connection.php");
+
 // Read file
 $singles = file("singles.txt");
 
@@ -12,22 +14,35 @@ for ($i = 0; $i < count($singles); $i++) {
         break;
     }
 }
+$owner_name = $db->quote($_GET["name"]);
+$owner_query = $db->query("SELECT * FROM user_info where name=$owner_name;");
 
-/* 
-* $owner_list is comprised of owner attributes in following order:
-* Name, Gender, Age, Personality type, Operating System, Min/Max Seeking Age (separate elements)
-*/
-$owner_list = explode(",", $owner);
-// $owner details
-$owner_gender = $owner_list[1];
-$owner_age = (int)$owner_list[2];
-$owner_personality = $owner_list[3];
-$owner_os = $owner_list[4];
-$owner_min_seek = (int)$owner_list[5];
-$owner_max_seek = (int)$owner_list[6];
+if ($owner_query -> rowCount() > 0) {
+    $owner = $owner_query->fetch();
+    $owner_id = (int) $owner["id"];
+    $owner_gender = $owner["gender"];
+    $owner_age = (int) $owner["age"];
+
+    // Get user_personality
+    $query = "SELECT personality_type from user_personality where id=$owner_id;";
+    $owner_personality = $db->query($query)->fetch()["personality_type"];
+
+    // Get user_fav_os
+    $query = "SELECT os from user_fav_os where id=$owner_id;";
+    $owner_os = $db->query($query)->fetch()["os"];
+    $owner_os = $db->quote($owner_os);
+
+    // Get user_seeking_age 
+    $query = "SELECT min_seeking_age, max_seeking_age from user_seeking_age where id=$owner_id;";
+    $seeking_age = $db->query($query)->fetch();
+    $owner_min_seek = (int)$seeking_age["min_seeking_age"];
+    $owner_max_seek = (int)$seeking_age["max_seeking_age"];
+}
 
 
 // get match 
+
+
 
 // get opposite gender
 $opposite_gender = '';
@@ -37,38 +52,35 @@ if (strcmp($owner_gender, 'M') === 0) {
     $opposite_gender = 'M';
 }
 
-$matches = array();
-for ($i = 0; $i < count($singles); $i++) {
-    $single_list = explode(",", $singles[$i]);
-    $single_gender = $single_list[1];
-    $single_age = (int)$single_list[2];
-    $single_personality = $single_list[3];
-    $single_os = $single_list[4];
-    $single_min_seek = (int)$single_list[5];
-    $single_max_seek = (int)$single_list[6];
+$opposite_gender = $db->quote($opposite_gender);
 
-    // Check requirements
-    // Check gender req
-    if (strcmp($opposite_gender, $single_gender) === 0) {
-        $owner_compatible = NULL;
-        $single_compatible = NULL;
-        if ($single_min_seek <= $owner_age && $owner_age <= $single_max_seek)
-            $owner_compatible = TRUE;
-        if ($owner_min_seek <= $single_age && $single_age <= $owner_max_seek)
-            $single_compatible = TRUE;
-        // check compatible age range req
-        if ($owner_compatible && $single_compatible) {
-            // check os req 
-            if (strcmp($owner_os, $single_os) === 0) {
-                // check personality req 
-                $pattern = "/[".$owner_personality."]/";
-                if (preg_match($pattern, $single_personality) === 1) {
-                    $matches[] = $singles[$i];
-                }
-            }
+$matches = array();
+
+$query = "
+    SELECT user.*, os.os, pt.personality_type, seek.min_seeking_age, seek.max_seeking_age
+    FROM user_info user
+    JOIN user_fav_os os ON user.id = os.id 
+    JOIN user_personality pt ON user.id = pt.id 
+    JOIN user_seeking_age seek ON user.id = seek.id 
+    WHERE user.gender = $opposite_gender
+    and user.age >= $owner_min_seek
+    and user.age <= $owner_max_seek
+    and seek.min_seeking_age <= $owner_age
+    and seek.max_seeking_age >= $owner_age
+    and os.os = $owner_os;
+";
+
+$potential_matches = $db->query($query);
+if ($potential_matches->rowCount() > 0) {
+    $rows = $potential_matches->fetchAll(PDO::FETCH_ASSOC);
+    foreach($rows as $potential_match) {
+        $pattern = "/[".$owner_personality."]/";
+        if (preg_match($pattern, $potential_match["personality_type"]) === 1) {
+            $matches[] = $potential_match;
         }
     }
 }
+
 if (count($matches) === 0) { 
 ?>
     <div> No match is found. </div>
@@ -77,30 +89,29 @@ if (count($matches) === 0) {
 ?>
 <p><strong> Matches for <?= $_GET["name"] ?> </strong></p>
 <?php
-    for ($i = 0; $i < count($matches); $i++) {
-        $single_info = explode(",", $matches[$i]);
+    foreach($matches as $single_info) {
 ?>
 <div class="match">
     <img src="user.jpg" alt="Profile Picture">
     <!--Match info-->
     <div>
-        <p> <?= $single_info[0] ?> </p>
+        <p> <?= $single_info["name"] ?> </p>
         <ul>
             <li>
                 <strong>gender: </strong> 
-                <?= $single_info[1] ?>
+                <?= $single_info["gender"] ?>
             </li>
             <li>
                 <strong>age: </strong> 
-                <?= $single_info[2] ?>
+                <?= $single_info["age"] ?>
             </li>
             <li>
                 <strong>type: </strong> 
-                <?= $single_info[3] ?>
+                <?= $single_info["personality_type"] ?>
             </li>
             <li>
                 <strong>OS: </strong> 
-                <?= $single_info[4] ?>
+                <?= $single_info["os"] ?>
             </li>
         </ul>
     </div>
